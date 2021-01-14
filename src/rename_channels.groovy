@@ -5,6 +5,8 @@ Description: Reads XML meta data from tif image and sets channel name
 
 // Import
 import groovy.xml.XmlParser
+import qupath.lib.images.servers.bioformats.BioFormatsImageServer
+import qupath.lib.images.servers.bioformats.BioFormatsServerBuilder
 
 // Destination of XML file
 def filename = "/Users/yokote.k/Desktop/test/test.xml"
@@ -17,7 +19,7 @@ def metadata = parser.parse(filename)
 def names = metadata.image.channels.channel.@name as String[]
 
 // Remove trailing whitespace
-names = names.collect { it -> it.substring(0, it.length()-1)}
+names = names.collect { it -> it.trim()}
 
 // Use GroovyShell.evaluate since setChannelNames does not take String[] as arg
 names = names.collect {it -> "'" + it + "'"}

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<indica>
+   <image>
+      <pixels>
+         <dimension sizeX="8511" sizeY="7212" ifd="0" channel="0" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="1" channel="1" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="2" channel="2" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="3" channel="3" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="4" channel="4" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="5" channel="5" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="6" channel="6" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="7" channel="7" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="8" channel="8" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="9" channel="9" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="10" channel="10" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="11" channel="11" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="12" channel="12" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="13" channel="13" level="0"/>
+         <dimension sizeX="8511" sizeY="7212" ifd="14" channel="14" level="0"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="15" channel="0" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="16" channel="1" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="17" channel="2" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="18" channel="3" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="19" channel="4" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="20" channel="5" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="21" channel="6" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="22" channel="7" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="23" channel="8" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="24" channel="9" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="25" channel="10" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="26" channel="11" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="27" channel="12" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="28" channel="13" level="1"/>
+         <dimension sizeX="4256" sizeY="3606" ifd="29" channel="14" level="1"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="30" channel="0" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="31" channel="1" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="32" channel="2" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="33" channel="3" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="34" channel="4" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="35" channel="5" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="36" channel="6" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="37" channel="7" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="38" channel="8" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="39" channel="9" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="40" channel="10" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="41" channel="11" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="42" channel="12" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="43" channel="13" level="2"/>
+         <dimension sizeX="2128" sizeY="1803" ifd="44" channel="14" level="2"/>
+         <dimension sizeX="1064" sizeY="902" ifd="45" channel="0" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="46" channel="1" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="47" channel="2" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="48" channel="3" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="49" channel="4" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="50" channel="5" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="51" channel="6" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="52" channel="7" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="53" channel="8" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="54" channel="9" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="55" channel="10" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="56" channel="11" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="57" channel="12" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="58" channel="13" level="3"/>
+         <dimension sizeX="1064" sizeY="902" ifd="59" channel="14" level="3"/>
+         <dimension sizeX="532" sizeY="451" ifd="60" channel="0" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="61" channel="1" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="62" channel="2" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="63" channel="3" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="64" channel="4" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="65" channel="5" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="66" channel="6" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="67" channel="7" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="68" channel="8" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="69" channel="9" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="70" channel="10" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="71" channel="11" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="72" channel="12" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="73" channel="13" level="4"/>
+         <dimension sizeX="532" sizeY="451" ifd="74" channel="14" level="4"/>
+      </pixels>
+      <channels>
+         <channel id="0" name="CD45RO " rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="1" name="CD4 " rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="2" name="hematoxylinC1 " rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="3" name="hematocylinC8 " rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="4" name="CCR7 " rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="5" name="CD3 " rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="6" name="CD8 " rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="7" name="Foxp3 " rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="8" name="Ki67 " rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="9" name="PanCK " rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="10" name="CD45RA" rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="11" name="CD45 " rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="12" name="CD103 " rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="13" name="CD49a " rgb="255" min="0.000000" max="255.000000"/>
+         <channel id="14" name="CD69 " rgb="255" min="0.000000" max="255.000000"/>
+      </channels>
+   </image>
+</indica>
+
