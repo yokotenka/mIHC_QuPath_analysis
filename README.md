@@ -19,7 +19,7 @@ Method:
 -unzip    
 -cd into the unzipped folder.   
 -run the following in terminal:
-      $ ./tiffcomment /path/to/image | ./xmlindent >> /output/folder/{name}.xml   
+      $ ./tiffcomment PATH_TO_ORIGINAL_FUSED_IMAGE_BEFORE_CONVERSION | ./xmlindent >> /output/folder/{name}.xml   
 
 3. rename_channels.groovy            
 Method:       
