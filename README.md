@@ -11,7 +11,7 @@ Method:
 -make a folder with all the fused images in it.  
 -run the script and when prompted, select the folder.  
 
-2. Get metadata xml file
+2. Get metadata xml file.   
 Requirements: Need Bio-Formats command line tools.  
 Description: Use the bio-formats tools to extract the metadata.   
 Method:  
@@ -21,10 +21,10 @@ Method:
 -run the following in terminal:
       $ ./tiffcomment /path/to/image | ./xmlindent >> /output/folder/{name}.xml   
 
-3. rename_channels.groovy        
-Method:    
--open the image you saved from 1 in QuPath. 
--open rename_channels.groovy in script     
--change the variable filename to the location of the xml file     
--run.  
+3. rename_channels.groovy            
+Method:       
+-open the image you saved from 1 in QuPath.    
+-open rename_channels.groovy in script         
+-change the variable filename to the location of the xml file         
+-run.      
 
