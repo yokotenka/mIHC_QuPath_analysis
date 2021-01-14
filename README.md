@@ -6,7 +6,7 @@ Steps:
 
 1. convert_fused_image.ijm.    
 Requirements: Bio-Formats plugin for imageJ.   
-Description: Convert the timepoints in the fused image to colour channels.
+Description: Convert the timepoints in the fused image to colour channels.       
 Method:   
 -make a folder with all the fused images in it.  
 -run the script and when prompted, select the folder.  
