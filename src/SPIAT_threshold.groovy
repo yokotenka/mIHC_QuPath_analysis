@@ -538,5 +538,5 @@ if (saveDensities) {
     }
     br.write(sb.toString())
     br.close()
-    println("Done")
 }
+println("Done")
