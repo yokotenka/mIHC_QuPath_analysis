@@ -2,7 +2,7 @@
 QuPath pipeline for Claire
 
 
-Steps: 
+## For Importing image into QuPath:
 
 1. convert_fused_image.ijm.    
 Requirements: Bio-Formats plugin for imageJ.   
@@ -28,3 +28,12 @@ Method:
 -change the variable filename to the location of the xml file         
 -run.      
 
+
+## For phenotyping:
+
+1. Complete above steps
+
+2. Select a region of interest and run stardist as shown here:
+      https://github.com/ninatubau/QuPath_scripts
+
+3. Run the SPIAT_threshold.groovy file
