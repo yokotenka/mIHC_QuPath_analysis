@@ -61,10 +61,10 @@ def filePath = "/Users/yokote.k/Documents/densities.csv"
 class Range {
 
     /** The minimum of the range*/
-    private Double min;
+    private Double min
 
     /** The maximum of the range*/
-    private Double max;
+    private Double max
 
     /** Constructor for the range class
      * @param min Minimum of the range
@@ -74,29 +74,29 @@ class Range {
         if (min.compareTo(max) >= 0 ){
             // Do error handling for when min is greater than equal to max
         }
-        this.min = min;
-        this.max= max;
+        this.min = min
+        this.max= max
     }
 
     /** Getter for the maximum value of the range
      * @return max
      */
     double getMax() {
-        return max;
+        return max
     }
 
     /** Getter for the minimum value of the range
      * @return min
      */
     double getMin() {
-        return min;
+        return min
     }
 
     /** Getter for the difference between the min and max values
      * @return max - min
      */
     double getDifference(){
-        return max - min;
+        return max - min
     }
 }
 
@@ -109,13 +109,13 @@ class Range {
  * @author Kenta
  */
 
-import org.apache.commons.math3.util.FastMath;
+import org.apache.commons.math3.util.FastMath
 
 class NormalDistribution {
     /** The mean of the normal distribution */
-    private double mean = 0;
+    private double mean = 0
     /** The standard deviation of the normal distribution */
-    private double standardDeviation = 1;
+    private double standardDeviation = 1
 
 
     /** Constructor
@@ -123,8 +123,8 @@ class NormalDistribution {
      * @param standardDeviation
      */
     NormalDistribution(double mean, double standardDeviation){
-        this.mean = mean;
-        this.standardDeviation = standardDeviation;
+        this.mean = mean
+        this.standardDeviation = standardDeviation
     }
 
     /** Constructor default is the standard normal distribution
@@ -136,7 +136,7 @@ class NormalDistribution {
      * @param standardDeviation
      */
     NormalDistribution(double standardDeviation){
-        this.standardDeviation = standardDeviation;
+        this.standardDeviation = standardDeviation
     }
 
     /** Getter for the density for a specified range
@@ -144,39 +144,39 @@ class NormalDistribution {
      @param n The number of data points
      */
     Double[] getDensityOfRange(Range range, int n){
-        Double[] densityArray = new Double[n];
+        Double[] densityArray = new Double[n]
 
-        Double increment = range.getDifference() / n;
-        Double currentPoint = (double) range.getMin();
+        Double increment = range.getDifference() / n
+        Double currentPoint = (double) range.getMin()
 
         for (int i=0; i<n; i++){
-            densityArray[i] = density(currentPoint);
-            currentPoint += increment;
+            densityArray[i] = density(currentPoint)
+            currentPoint += increment
         }
-        return densityArray;
+        return densityArray
     }
 
     /** Calculates the density at a specific point
      @param x The point at which the density function is being evaluated at.
      */
     Double density(double x){
-        double x0 = (x - mean) / standardDeviation;
-        double exponent = -0.5 * x0 * x0;
-        return FastMath.exp(exponent) / (standardDeviation * FastMath.sqrt(2 * Math.PI));
+        double x0 = (x - mean) / standardDeviation
+        double exponent = -0.5 * x0 * x0
+        return FastMath.exp(exponent) / (standardDeviation * FastMath.sqrt(2 * Math.PI))
     }
 
     /** Setter for the mean
      * @param mean The new mean for the normal distribution.
      */
     void setMean(double mean) {
-        this.mean = mean;
+        this.mean = mean
     }
 
     /** Setter for the standard deviation
      * @param standardDeviation
      */
     void setStandardDeviation(double standardDeviation){
-        this.standardDeviation = standardDeviation;
+        this.standardDeviation = standardDeviation
     }
 }
 
@@ -194,25 +194,25 @@ class NormalDistribution {
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 class KernelDensityEstimation {
     /** The standard deviation which will be used for individual normal distributions */
-    private double bandWidth;
+    private double bandWidth
 
     /** The kernel function name. Defaults to the Gaussian kernel. In reality whatever kernel works the same. */
-    private String kernelName ="gaussian";
+    private String kernelName ="gaussian"
 
     /** Weighting for each data point. Not implemented yet. */
-    private Double[] weights = null;
+    private Double[] weights = null
 
     /** The range of the data points */
-    private Range range = null;
+    private Range range = null
 
     /** The estimated kernel density array */
-    private Double[] estimate;
+    private Double[] estimate
 
     /** The number of data points to be included in the estimated array*/
-    private int n = 2048;
+    private int n = 2048
 
     /** The data points which the estimation is performed on */
-    private double[] x;
+    private double[] x
 
 
     /** Constructor
@@ -221,46 +221,46 @@ class KernelDensityEstimation {
      * @param max Maximum in the range.
      */
     KernelDensityEstimation(double[] x, double min, double max){
-        this.x = x;
-        setBandWidthMethod("Default");
-        this.range = new Range(min, max);
+        this.x = x
+        setBandWidthMethod("Default")
+        this.range = new Range(min, max)
     }
 
     /** Estimation
      * @return kernelDensity The kernel density estimation for the given data, x.
      */
     Double[] estimate(){
-        Double[] kernelDensity = new Double[n];
-        Double[] currentDensity;
-        boolean isFirstElement = true;
+        Double[] kernelDensity = new Double[n]
+        Double[] currentDensity
+        boolean isFirstElement = true
 
         // Initialise kernel distribution.
-        NormalDistribution kernel = new NormalDistribution(bandWidth);
+        NormalDistribution kernel = new NormalDistribution(bandWidth)
 
         // Iterate through every datapoint
         for (Double point : x){
 
             // Set the mean value for the kernel distribution.
-            kernel.setMean(point);
+            kernel.setMean(point)
 
             // Get the distribution of the kernel for the given range
-            currentDensity = kernel.getDensityOfRange(range, n);
+            currentDensity = kernel.getDensityOfRange(range, n)
 
             // Calculate the kernel density
             if (isFirstElement){
-                kernelDensity = currentDensity;
-                isFirstElement = false;
+                kernelDensity = currentDensity
+                isFirstElement = false
             } else{
                 for (int i=0; i<kernelDensity.length; i++){
-                    kernelDensity[i] = kernelDensity[i] + currentDensity[i];
+                    kernelDensity[i] = kernelDensity[i] + currentDensity[i]
                 }
             }
         }
 
         // Normalise
-        for (int i=0; i<kernelDensity.length; i++) kernelDensity[i] = kernelDensity[i] / x.length;
+        for (int i=0; i<kernelDensity.length; i++) kernelDensity[i] = kernelDensity[i] / x.length
 
-        return kernelDensity;
+        return kernelDensity
     }
 
     /** Private method which will calculate the bandwidth to be used. Probably should create another class for this.
@@ -268,15 +268,15 @@ class KernelDensityEstimation {
     private void setBandWidthMethod(String bandWidthName) throws UnsupportedOperationException {
 
         if (bandWidthName == "Silverman"){
-            throw new UnsupportedOperationException("Silverman not yet supported");
+            throw new UnsupportedOperationException("Silverman not yet supported")
         } else if (bandWidthName == "SJ"){
-            throw new UnsupportedOperationException("Sheather & Jones not yet supported");
+            throw new UnsupportedOperationException("Sheather & Jones not yet supported")
         } else {
             // Can change this if need be.
-            DescriptiveStatistics da = new DescriptiveStatistics(x);
-            double xStandardDeviation = da.getStandardDeviation();
-            double iqr = da.getPercentile(75) - da.getPercentile(25);
-            this.bandWidth = 0.9 * Math.min(xStandardDeviation, iqr/1.34) * Math.pow(x.length, -1/5);
+            DescriptiveStatistics da = new DescriptiveStatistics(x)
+            double xStandardDeviation = da.getStandardDeviation()
+            double iqr = da.getPercentile(75) - da.getPercentile(25)
+            this.bandWidth = 0.9 * Math.min(xStandardDeviation, iqr/1.34) * Math.pow(x.length, -1/5)
         }
     }
 
@@ -284,7 +284,7 @@ class KernelDensityEstimation {
      * @return bandWidth
      */
     double getBandWidth(){
-        return this.bandWidth;
+        return this.bandWidth
     }
 }
 
@@ -297,11 +297,11 @@ class KernelDensityEstimation {
  * @param arr The array which the local minima will be found
  * @return ArrayList of all the local minima
  */
-def findLocalMinimaIndex(Double[] arr) {
+def static findLocalMinimaIndex(Double[] arr) {
 
     // Empty vector to store points of
     // local maxima and minima
-    ArrayList<Double> mn = new ArrayList<Double>();
+    ArrayList<Double> mn = new ArrayList<Double>()
     int n = arr.length
 
     // Iterating over all points to check
@@ -310,16 +310,16 @@ def findLocalMinimaIndex(Double[] arr) {
         // Condition for local minima
         if ((arr[i - 1].compareTo(arr[i])) > 0 &&
                 (arr[i].compareTo(arr[i + 1]) < 0)) {
-            mn.add(i);
+            mn.add(i)
         }
     }
 
     // Checking whether the last point is
     // local maxima or minima or none
     if (arr[n - 1].compareTo(arr[n - 2]) < 0){
-        mn.add(n - 1);
+        mn.add(n - 1)
     }
-    return mn;
+    return mn
 }
 
 
@@ -352,14 +352,14 @@ csvColumnHeaders.add("Intensity")
 
 // x-axis
 def increment = 255 / n
-def val = 0;
-def x = new double[n];
+def val = 0
+def x = new double[n]
 for (int i=0; i < n; i++){
     x[i] = val
     val += increment
 }
 
-densityArrayList.add(new ArrayList<>(Arrays.asList(x)))
+densityArrayList.add(new ArrayList<>(Arrays.asList(x)) as ArrayList<Double>)
 
 /*
  * ############################################ Checks #######################################################
@@ -372,7 +372,7 @@ assert !baseLineMarkers.isEmpty() : "No baseline markers entered"
 // ############################################### For regular markers #################################################
 println("Calculating for non tumour markers")
 
-for (markerName : markers){
+for (markerName in markers){
     if (!markerName.equals(tumourMarker)) {
         // Column name
         def columnName = markerName + measurement
@@ -387,7 +387,7 @@ for (markerName : markers){
         def estimation = new KernelDensityEstimation(markerIntensities, 0, 255)
 
         // Estimate
-        def numbers = estimation.estimate() as Double[];
+        def numbers = estimation.estimate() as Double[]
 
         // Find local minima of the density function (inflection of the distribution function)
         def minima = findLocalMinimaIndex(numbers)
@@ -407,7 +407,7 @@ for (markerName : markers){
         def maxDensityIndex = arrayListNumbers.indexOf(maxDensity)
 
         // 25% of the max density
-        def upperThreshold = maxDensity * 0.25;
+        def upperThreshold = maxDensity * 0.25
 
         // Filter the threshold list
         for (int i = 0; i < minima.size(); i++) {
@@ -424,12 +424,12 @@ for (markerName : markers){
 
         // Get the final threshold
         def threshold = x[thresholdList[0]]
-        println("Threshold for "+markerName+": "+threshold)
+        println("Threshold for "+markerName+": "+threshold.toString())
 
         // Add to the density array list
         densityArrayList.add(arrayListNumbers)
         csvColumnHeaders.add(markerName)
-        thresholdMap.put(markerName, threshold)
+        thresholdMap.put(markerName as String , threshold as Double)
     }
 }
 
@@ -447,7 +447,7 @@ if (!tumourMarker.isEmpty()){
             .filter({d -> !Double.isNaN(d)})
             .collect()
 
-    for (marker : baseLineMarkers){
+    for (marker in baseLineMarkers){
         def baselineColumnName = marker + measurement
         def baselineMarkerIntensity = cells.stream()
                 .mapToDouble({p -> p.getMeasurementList().getMeasurementValue(baselineColumnName)})
@@ -481,7 +481,7 @@ if (!tumourMarker.isEmpty()){
     def estimation = new KernelDensityEstimation(markerIntensities, 0, 255)
 
     // Estimate
-    def numbers = estimation.estimate() as Double[];
+    def numbers = estimation.estimate() as Double[]
 
     // Find local minima of the density function (inflection of the distribution function)
     def minima = findLocalMinimaIndex(numbers)
