@@ -12,6 +12,10 @@
  *        if you would like the normalise value i.e. between 0-1, simply divide the threshold by 255.
  *      - you can also choose to save the kernel density estimations as a .csv file. This way you can visualise the
  *        density which was fitted using tools like excel, python, matlab etc.
+ *
+ * This method of thresolding is taken from: 
+ *          https://github.com/cancer-evolution/SPIAT/blob/master/R/predict_phenotypes.R
+ *          https://www.biorxiv.org/content/10.1101/2020.05.28.122614v1
  */
 
 
@@ -26,8 +30,9 @@ markers = [
 
 /* Baseline markers
  * These are the markers which shouldn't appear in a tumour cell. Since CD45 is present only in immune cells, we use
- * this marker as a baseline marker. Of course we can add in more markers to the list but we haven't really understood
- * the advantage of doing this.
+ * this marker as a baseline marker. We call cells which express these markers as baseline cells. We measure the 95 percentile
+ * of the intensity of tumour marker in the baseline cells and compare this value with the first inflection point of the 
+ * overall estimated density of the tumour marker and take the smaller one as the threshold for the tumour. 
  */
 def baseLineMarkers = [
         "CD45"
@@ -533,5 +538,5 @@ if (saveDensities) {
     }
     br.write(sb.toString())
     br.close()
-    println("Done")
 }
+println("Done")
