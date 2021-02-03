@@ -9,7 +9,7 @@ import qupath.lib.images.servers.bioformats.BioFormatsImageServer
 import qupath.lib.images.servers.bioformats.BioFormatsServerBuilder
 
 // Destination of XML file
-def filename = "/Users/yokote.k/Desktop/test/test.xml"
+def filename = "/Users/yokote.k/Desktop/test/convert/SerialStainFuse_T18AH0205.xml"
 
 // Parse in xml
 def parser = new XmlParser()

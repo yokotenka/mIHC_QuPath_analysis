@@ -1,34 +1,27 @@
 // ############################ Import ######################################
+
+import com.sun.javafx.charts.Legend
 import javafx.application.Platform
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.geometry.Insets
+import javafx.geometry.Orientation
 import javafx.geometry.Pos
+import javafx.scene.Node
 import javafx.scene.Scene
+import javafx.scene.chart.Chart
 import javafx.scene.control.*
 import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.layout.GridPane
+import javafx.scene.paint.Color
+import javafx.scene.shape.Line
 import javafx.stage.Stage
 import qupath.lib.gui.QuPathGUI
 import qupath.lib.gui.scripting.QPEx
+import qupath.lib.objects.classes.PathClassFactory
+import qupath.lib.scripting.QP
+
 import static qupath.lib.scripting.QP.*;
-
-/*
- * ################################### User Input #######################################
- * In the future, this section will become a GUI so that it is easier for the user to use.
- *
- * Before you run this code, you must:
- *      - successfully import the images into QuPath (where all the images are colour channels)
- *      - rename the colour channels
- *      - run stardist on the region of interest
- *
- * Output:
- *      - Currently the output will be printed out onto the log. The threshold is given as a number in the range 0-255
- *        if you would like the normalise value i.e. between 0-1, simply divide the threshold by 255.
- *      - you can also choose to save the kernel density estimations as a .csv file. This way you can visualise the
- *        density which was fitted using tools like excel, python, matlab etc.
- */
-
 
 
 /* #####################################################################################################################
@@ -273,15 +266,34 @@ class KernelDensityEstimation {
     }
 }
 
+
+//class BandWidth{
+//    private String method
+//
+//    /** Calculate the bandWidth from the given method and the data
+//     * @param method
+//     * @param x
+//     */
+//    static getBandWidth(String method, Double[] x){
+//
+//        if (bandWidthName == "Silverman"){
+//            throw new UnsupportedOperationException("Silverman not yet supported")
+//        } else if (bandWidthName == "SJ"){
+//            throw new UnsupportedOperationException("Sheather & Jones not yet supported")
+//        } else {
+//            // Can change this if need be.
+//            DescriptiveStatistics da = new DescriptiveStatistics(x)
+//            double xStandardDeviation = da.getStandardDeviation()
+//            double iqr = da.getPercentile(75) - da.getPercentile(25)
+//            this.bandWidth = 0.9 * Math.min(xStandardDeviation, iqr/1.34) * Math.pow(x.length, -1/5)
+//        }
+//    }
+//}
+
 /*
  * ############################################# Utility ###############################################################
  */
 
-/**
- * Function to get the local minima of a given array
- * @param arr The array which the local minima will be found
- * @return ArrayList of all the local minima
- */
 def static findLocalMinimaIndex(Double[] arr) {
 
     // Empty vector to store points of
@@ -309,7 +321,8 @@ def static findLocalMinimaIndex(Double[] arr) {
 
 
 // ############################ Marker Class ######################################
-/** Marker class. Has name and information on whether it is selected or not.
+/** Marker class. Has name and information on whether it is selected or not. This is the row class
+ * for the first two tables.
  */
 class Marker {
     private String name;
@@ -362,6 +375,34 @@ class Marker {
 }
 
 
+// ############################ Results Row class ######################################
+/** Results row class. For displaying the results in th results table
+ *
+ */
+class ResultsRow {
+    private String propertyName
+    private Double propertyValue
+
+    ResultsRow(String propertyName, Double propertyValue){
+        this.propertyName = propertyName
+        this.propertyValue = propertyValue
+    }
+
+    String getPropertyName(){
+        return this.propertyName
+    }
+
+    Double getPropertyValue(){
+        return this.propertyValue
+    }
+}
+
+// ############################## Measurement Classifier Class
+/**
+ * Helper class to calculate & apply thresholds, resulting in object classifications being set.
+ * From Nina Tubau's https://github.com/ninatubau/QuPath_scripts/blob/main/scripts/multichannel_analysis.groovy
+ */
+
 // ############################ Get current image data ######################################
 
 // Collect all the data
@@ -390,7 +431,7 @@ for (int i=0; i<server.nChannels(); i++){
 
 //Settings to control the dialog boxes for the GUI
 int col = 0
-int row = 0
+int row_col_0 = 0
 
 
 // ############################## The Grid ##########################################
@@ -401,92 +442,170 @@ gridPane.setPadding(new Insets(10, 10, 10, 10));
 // ############################ Table for Thresholded Markers ######################################
 def requestLabelThreshold = new Label("Select the markers to be thresholded:")
 requestLabelThreshold.setFont(javafx.scene.text.Font.font(15))
-gridPane.add(requestLabelThreshold,col, row++, 1, 1)
+gridPane.add(requestLabelThreshold,col, row_col_0++, 1, 1)
 requestLabelThreshold.setAlignment(Pos.CENTER)
 
+// Initialise columns
 TableColumn<Marker, String> nameColThresh = new TableColumn<>("Name")
-nameColThresh.setMinWidth(200)
 nameColThresh.setCellValueFactory(new PropertyValueFactory<>("name"))
 
 TableColumn<Marker, CheckBox> selectedColThresh = new TableColumn<>("Select")
 selectedColThresh.setCellValueFactory(new PropertyValueFactory<>("selected"))
 
+// Initialise table
 TableView<Marker> tableThresh = new TableView<>()
 tableThresh.setItems(thresholdMarkers)
 tableThresh.getColumns().addAll(nameColThresh, selectedColThresh)
 
-gridPane.add(tableThresh, 0, row++)
+// add to gridpane
+gridPane.add(tableThresh, 0, row_col_0++)
 
 
 // ############################ Table for Baseline Markers ######################################
 def requestLabelBaseline = new Label("Select the baseline markers:")
 requestLabelBaseline.setFont(javafx.scene.text.Font.font(15))
-gridPane.add(requestLabelBaseline, 0 , row++, 1, 1)
+gridPane.add(requestLabelBaseline, 0 , row_col_0++, 1, 1)
 requestLabelBaseline.setAlignment(Pos.CENTER)
 
-// For the Baseline Marker table
-// Table columns
+// Initialise columns
 TableColumn<Marker, String> nameColBaseline = new TableColumn<>("Name")
-nameColBaseline.setMinWidth(200)
 nameColBaseline.setCellValueFactory(new PropertyValueFactory<>("name"))
 
 TableColumn<Marker, CheckBox> selectedColBaseline = new TableColumn<>("Select")
-//nameCol.setMinWidth(100)
 selectedColBaseline.setCellValueFactory(new PropertyValueFactory<>("selected"))
 
+// Initialise table
 TableView<Marker> tableBaseline = new TableView<>()
 tableBaseline.setItems(baselineMarkers)
 tableBaseline.getColumns().addAll(nameColBaseline, selectedColBaseline)
 
-gridPane.add(tableBaseline, 0, row++)
+// add to gridpane
+gridPane.add(tableBaseline, 0, row_col_0++)
 
 
 // ############################ ComboBox for Tumour Marker ######################################
 def requestLabelTumourMarker = new Label("Select the tumour marker:")
 requestLabelTumourMarker.setFont(javafx.scene.text.Font.font(15))
-gridPane.add(requestLabelTumourMarker, 0, row++, 3, 1)
+gridPane.add(requestLabelTumourMarker, 0, row_col_0++, 3, 1)
 requestLabelTumourMarker.setAlignment(Pos.CENTER)
 
+// initliase combobox
 ComboBox comboBox = new ComboBox(markerNames)
-gridPane.add(comboBox, 0, row++)
+
+// add to gridpane
+gridPane.add(comboBox, 0, row_col_0++)
 
 
 // ############################ Button to run script ######################################
 
 Button startButton = new Button()
 startButton.setText("Run Thresholding")
-gridPane.add(startButton, 0, row++)
+gridPane.add(startButton, 0, row_col_0++)
+
+// ################################# Separator ##########################################
+Separator separator = new Separator(Orientation.VERTICAL);
+gridPane.add(separator, 1, 0, 1, row_col_0++)
+
+// ################################# Results Selection ##########################################
+def row_col_2 = 0
+def requestLabelResults = new Label("Select marker to display results:")
+requestLabelResults.setFont(javafx.scene.text.Font.font(15))
+gridPane.add(requestLabelResults, 2, row_col_2++)
+requestLabelResults.setAlignment(Pos.CENTER)
+
+ComboBox comboBoxResults = new ComboBox(markerNames)
+gridPane.add(comboBoxResults, 3, 0)
+
+// ############################ Line Chart ######################################
+import javafx.scene.chart.NumberAxis
+import javafx.scene.chart.LineChart
+import javafx.scene.layout.Pane
+import javafx.scene.chart.XYChart.Series
+import javafx.scene.chart.XYChart.Data
+final NumberAxis xAxis = new NumberAxis();
+final NumberAxis yAxis = new NumberAxis();
+xAxis.setAutoRanging(false)
+xAxis.setUpperBound(255)
+xAxis.setLabel("Intensity")
+yAxis.setAutoRanging(false)
+
+//creating the chart
+final LineChart<Number,Number> lineChart = new LineChart<Number,Number>(xAxis,yAxis);
+
+lineChart.setTitle("Density Estimation");
+lineChart.setCreateSymbols(false)
+lineChart.setLegendVisible(false)
+
+Line valueMarker = new Line()
+
+Pane pane = new Pane()
+pane.getChildren().addAll(lineChart, valueMarker)
+
+gridPane.add(pane, 2, row_col_2++, 2, 1)
+
+
+// There is definitely a faster way of doing this. Somehting is wrong
+Label thresholdLabel = new Label()
+Label percentageLabel = new Label()
+gridPane.add(thresholdLabel, 2, row_col_2 + 2)
+gridPane.add(percentageLabel, 2, row_col_2 + 3)
 
 // ############################ Display window ######################################
 Platform.runLater {
     def stage = new Stage()
     stage.initOwner(QuPathGUI.getInstance().getStage())
     stage.setScene(new Scene( gridPane))
-    stage.setTitle("Thresholding")
-    stage.setWidth(300);
-    stage.setHeight(700);
+    stage.setTitle("SPIAT Thresholding")
     stage.show()
 }
 
-
-
 // ############################ Action for when button is pressed ######################################
+// Threshold map
+def thresholdMap = new HashMap<String, Double>()
+def percentageMap = new HashMap<String, Double>()
+
+def n = 2048
+def densityArrayList = new ArrayList<ArrayList<Double>>(server.nChannels())
+
+def maxDensityList = []
+def maxIntensityList = []
+// Measurement being used
+
+// MAKE THIS AN OPTION
+def measurement = ": Cell: Mean"
 
 
+// x-axis
+def increment = 255 / n
+def val = 0
+def x = new double[n]
+for (int i=0; i < n; i++){
+    x[i] = val
+    val += increment
+}
+// ######################## Get the selected data
+def selectedMarkers = []
+def selectedBaselineMarkers = []
+def invalidInputs = []
+
+// For the colour for each of the markers
+HashMap<String, Integer> colourHashMap = new HashMap<>()
+
+
+/*
+ *
+ *  EDIT so that when pressing button, it remebers what it has already calculated.
+ *
+ */
+resetDetectionClassifications()
 startButton.setOnAction((event) -> {
 
+    selectedMarkers = []
+    selectedBaselineMarkers = []
+    invalidInputs = []
+    lineChart.getData().clear()
 
-
-
-
-    // Measurement being used
-    def measurement = ": Cell: Mean"
-
-    // ######################## Get the selected data
-    def selectedMarkers = []
-    def selectedBaselineMarkers = []
     def tumourMarker = comboBox.getValue()
-    def invalidInputs = []
 
     for (int i = 0; i < server.nChannels(); i++) {
         if (thresholdMarkers.get(i).isSelected()) {
@@ -500,6 +619,7 @@ startButton.setOnAction((event) -> {
         }
     }
 
+    // FIX THIS ERROR HANDLING CANNOT .isEmpty() on a null object
     // ############################ Error handling ######################################
     if (comboBox.getSelectionModel().isEmpty() || !invalidInputs.isEmpty()){
         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
@@ -526,42 +646,24 @@ startButton.setOnAction((event) -> {
     * ############################################ Qupath Scripting #######################################################
     */
 
-    // Threshold map
-    def thresholdMap = new HashMap<String, Double>()
-    def n = 2048
-    def densityArrayList = new ArrayList<ArrayList<Double>>(server.nChannels())
-    def csvColumnHeaders = []
-    csvColumnHeaders.add("Intensity")
 
-    // x-axis
-    def increment = 255 / n
-    def val = 0
-    def x = new double[n]
-    for (int i=0; i < n; i++){
-        x[i] = val
-        val += increment
-    }
-
-    densityArrayList.add(new ArrayList<>(Arrays.asList(x)) as ArrayList<Double>)
-
-    /*
-    * ############################################ Checks #######################################################
-    */
 
 
 // ############################################### For regular markers #################################################
     println("Calculating for non tumour markers")
 
+    def markerIndex =0
     for (markerName in selectedMarkers){
         if (!markerName.equals(tumourMarker)) {
             // Column name
             def columnName = markerName + measurement
-
             // Change to array
             def markerIntensities = cells.stream()
                     .mapToDouble({ p -> p.getMeasurementList().getMeasurementValue(columnName) })
                     .filter({ d -> !Double.isNaN(d) })
                     .toArray()
+
+            maxIntensityList.add(Collections.max(markerIntensities.toList()))
 
             // Instantiate KernelDensityEstimation class
             def estimation = new KernelDensityEstimation(markerIntensities, 0, 255)
@@ -586,6 +688,8 @@ startButton.setOnAction((event) -> {
             // The intensity of where the max density occurs
             def maxDensityIndex = arrayListNumbers.indexOf(maxDensity)
 
+            maxDensityList.add(maxDensity)
+
             // 25% of the max density
             def upperThreshold = maxDensity * 0.25
 
@@ -602,26 +706,66 @@ startButton.setOnAction((event) -> {
             // Make sure the threshold list is not empty
             assert (thresholdList.size()): "Threshold list empty for " + markerName
 
-            // Get the final threshold
             def threshold = x[thresholdList[0]]
+
             println("Threshold for " + markerName + ": " + threshold.toString())
 
             // Add to the density array list
             densityArrayList.add(arrayListNumbers)
-            csvColumnHeaders.add(markerName)
             thresholdMap.put(markerName as String, threshold as Double)
+
+            // For the line chart
+            Series series = new Series();
+            for (int j=0; j < x.size(); j++){
+                series.getData().add(new Data(x[j], numbers[j]))
+            }
+            series.setName(markerName);
+            lineChart.getData().add(series)
+            lineChart.getData().get(markerIndex++).getNode().setVisible(false)
+
+            Series vertLine = new Series()
+            vertLine.getData().add(new Data(thresholdMap.get(markerName), 0))
+            vertLine.getData().add(new Data(thresholdMap.get(markerName), maxDensity * 1.25))
+            vertLine.setName("Threshold for "+markerName)
+            lineChart.getData().add(vertLine)
+            lineChart.getData().get(markerIndex).getNode().setVisible(false)
+            lineChart.getData().get(markerIndex++).getNode().setStyle("-fx-stroke: lightslategray;")
+
+            def count = 0
+            for (markerIntensity in markerIntensities){
+                if (markerIntensity > threshold){
+                    count++
+                }
+            }
+            def percentage = (count / markerIntensities.size()) * 100
+            percentageMap.put(markerName, percentage as Double)
+
+
+
+
+
+//            def defaultColor = colourHashMap.containsKey(markerName) ? colourHashMap.get(markerName) : new Integer()
+
+            def positive = cells.findAll {it.getMeasurementList().getMeasurementValue(columnName) > threshold}
+            positive.each {
+                def currentClass = it.getPathClass()
+                def pathClass
+                // Create a classifier - only assign the color if this is a single classification
+                if (currentClass == null) {
+                    pathClass = PathClassFactory.getPathClass(markerName)
+                }
+                else
+                    pathClass = PathClassFactory.getDerivedPathClass(currentClass, markerName, null)
+                it.setPathClass(pathClass)
+            }
         }
     }
-
-
-
 // ############################################## For tumour marker ####################################################
     println("Calculating for the tumour marker")
-
     if (!tumourMarker.isEmpty()){
         def columnName = tumourMarker + measurement
 
-        // Get the cells which are positive for the baseline markers
+        // ###### Get the cells which are positive for the baseline markers ######
         def filteredTumourIntensities = cells.stream()
                 .mapToDouble({p -> p.getMeasurementList().getMeasurementValue(columnName)})
                 .filter({d -> !Double.isNaN(d)})
@@ -649,15 +793,16 @@ startButton.setOnAction((event) -> {
         def stats = new DescriptiveStatistics(filteredTumourIntensities as double[])
         def cutOffForTumour = stats.getPercentile(95)
 
-        columnName = tumourMarker + measurement
-
         // Change to array
         def markerIntensities = cells.stream()
                 .mapToDouble({p -> p.getMeasurementList().getMeasurementValue(columnName)})
                 .filter({d -> !Double.isNaN(d)})
                 .toArray()
 
-        // Instantiate KernelDensityEstimation class
+        maxIntensityList.add(Collections.max(markerIntensities.toList()))
+
+
+        // ######## Now find KDE like other markers ###############
         def estimation = new KernelDensityEstimation(markerIntensities, 0, 255)
 
         // Estimate
@@ -672,28 +817,166 @@ startButton.setOnAction((event) -> {
         // Get the threshold
         ArrayList<Double> arrayListNumbers = new ArrayList<>(Arrays.asList(numbers))
 
+        def maxDensity = Collections.max(arrayListNumbers)
+        maxDensityList.add(maxDensity)
+        def maxDensityIndex = arrayListNumbers.indexOf(maxDensity)
+
         // threshold for tumour marker
         def threshold = 0
 
-        // Filter the threshold list
-        def index = minima[0]
 
-        // Get the first threshold and compare to the cutOffForTumour.
-        if ((x[index].compareTo(cutOffForTumour) <= 0)) {
-            threshold = x[index]
-        } else {
-            threshold = cutOffForTumour
+        // ######### Find threhsold ############
+        for (int i=0; i < minima.size(); i++){
+            def index = minima[i]
+            if (x[index] < x[maxDensityIndex]){
+                continue
+            }
+            // Get the first threshold and compare to the cutOffForTumour.
+            if ((x[index].compareTo(cutOffForTumour) <= 0)) {
+                threshold = x[index]
+                break
+            } else {
+                threshold = cutOffForTumour
+                break
+            }
         }
 
+        println("Threshold for "+tumourMarker+": "+threshold)
+
+        // Put the threshold in the map
         thresholdMap.put(tumourMarker, threshold)
         densityArrayList.add(arrayListNumbers)
-        csvColumnHeaders.add(tumourMarker)
 
+        // ####### Add the data into the lineChart
+        Series series = new Series();
+        for (int j=0; j < x.size(); j++){
+            series.getData().add(new Data(x[j], numbers[j]))
+        }
+        series.setName(tumourMarker);
+        lineChart.getData().add(series)
+        lineChart.getData().get(markerIndex++).getNode().setVisible(false)
+
+        // Vertical line which will show where the threshold is.
+        Series vertLine = new Series()
+        vertLine.getData().add(new Data(thresholdMap.get(tumourMarker), 0))
+        vertLine.getData().add(new Data(thresholdMap.get(tumourMarker), maxDensity * 1.25))
+        vertLine.setName("Threshold for "+tumourMarker)
+        lineChart.getData().add(vertLine)
+        lineChart.getData().get(markerIndex).getNode().setVisible(false)
+        lineChart.getData().get(markerIndex++).getNode().setStyle("-fx-stroke: lightslategray;")
+
+        // ###### Calculate percentage
+        def count = 0
+
+        // Can improve this one
+        for (markerIntensity in markerIntensities){
+            if (markerIntensity > threshold){
+                count++
+            }
+        }
+        def percentage = (count / markerIntensities.size()) * 100
+        percentageMap.put(tumourMarker, percentage as Double)
+
+        // Set class for each cell
+        def positive = cells.findAll {it.getMeasurementList().getMeasurementValue(columnName) > threshold}
+        positive.each {
+            def currentClass = it.getPathClass()
+            def pathClass
+            // Create a classifier - only assign the color if this is a single classification
+            if (currentClass == null) {
+                pathClass = PathClassFactory.getPathClass(tumourMarker)
+            }
+            else
+                pathClass = PathClassFactory.getDerivedPathClass(currentClass, tumourMarker, null)
+            it.setPathClass(pathClass)
+        }
     }
-
-    // Print out the thresholds
-    println(thresholdMap.toString())
-
+    fireHierarchyUpdate()
 });
+
+
+
+// ################### Utility for selecting objects #############################
+
+/**Checks if classificationName is in the pathClass recursively
+ * @param pathClass
+ * @param classificationName
+ * @return
+ */
+boolean checkForSingleClassification(def pathClass, classificationName) {
+    if (pathClass == null)
+        return false
+    if (pathClass.getName() == classificationName)
+        return true
+    return checkForSingleClassification(pathClass.getParentClass(), classificationName)
+}
+
+/** Checks if all the classification names in the array are in the pathclass
+ * @param pathClass
+ * @param classificationNames
+ * @return
+ */
+boolean checkForClassifications(def pathClass, String...classificationNames) {
+    if (classificationNames.length == 0)
+        return false
+    for (String name : classificationNames) {
+        if (!checkForSingleClassification(pathClass, name))
+            return false
+    }
+    return true
+}
+
+
+// ######################### Action upon combobox selection for results #############################
+
+def currentlySelected = getSelectedObjects()
+
+comboBoxResults.setOnAction {
+
+    // Get the selected marker
+    String selectedForResults = comboBoxResults.getValue()
+
+    // Get the axes for the line chart
+    NumberAxis lineChartYAxis = (NumberAxis) lineChart.getYAxis()
+    NumberAxis lineChartXAxis = (NumberAxis) lineChart.getXAxis()
+
+
+    for (int k=0; k < selectedMarkers.size() * 2 ; k+=2){
+        if (lineChart.getData().get(k).getNode().isVisible()){
+            // Change previously visible series to invisible
+            lineChart.getData().get(k).getNode().setVisible(false)
+            lineChart.getData().get(k+1).getNode().setVisible(false)
+        }
+        if (lineChart.getData().get(k).getName()==selectedForResults){
+            // Change the selected marker series to visible
+            lineChart.getData().get(k).getNode().setVisible(true)
+            lineChart.getData().get(k+1).getNode().setVisible(true)
+
+            // Change the upper bound of the probability to suit the marker
+            lineChartYAxis.setUpperBound(maxDensityList.get(k/2 as int) * 1.25)
+            lineChartYAxis.setLowerBound(0)
+
+            // Change the upper bound of the intensity to suit the marker
+            lineChartXAxis.setUpperBound(Math.ceil(maxIntensityList.get(k/2 as int) * 1.25))
+            lineChartXAxis.setLowerBound(0)
+
+            // title change
+            lineChart.setTitle("Density Estimation for " + selectedForResults);
+
+            // Change the displayed threshold and percentage
+            thresholdLabel.setText("Threshold for "+selectedForResults+": "+thresholdMap.get(selectedForResults))
+            percentageLabel.setText("Percentage for "+selectedForResults+" positive cells in tissue: "+percentageMap.get(selectedForResults) + "%")
+
+            // Select the cells with the markers being positive.
+            if (currentlySelected != null) {
+                imageData.getHierarchy().selectionModel.deselectObjects(currentlySelected)
+            }
+            def positive = cells.stream().filter({checkForClassifications(it.getPathClass(), selectedForResults)}).collect()
+            imageData.getHierarchy().selectionModel.selectObjects(positive)
+            currentlySelected = positive
+        }
+    }
+}
+
 
 
